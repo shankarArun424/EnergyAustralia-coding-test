@@ -39,15 +39,15 @@ public class EnergyAustraliaCodingTestApplication {
 				Map<String, List<Map<String, Object>>> recordLabelsMap = new HashMap<>();
 
 				/* API connecting part */
-//				logger.info("Loading API url");
-//				String festivalApiURL = "https://eacp.energyaustralia.com.au/codingtest/api/v1/festivals";
-//				RestTemplate restApi = new RestTemplate();
-//				String festivalDataResult = restApi.getForObject(festivalApiURL, String.class);
-//				logger.info("API data retrieved in 200/429");
+				logger.info("Getting data from API url");
+				String festivalApiURL = "https://eacp.energyaustralia.com.au/codingtest/api/v1/festivals";
+				RestTemplate restApi = new RestTemplate();
+				String festivalDataResult = restApi.getForObject(festivalApiURL, String.class);
+				logger.info("API data retrieved in 200/429");
 
 				/* Local data part for testing */
-				String festivalDataResult = "[{\"name\":\"Trainerella\",\"bands\":[{\"name\":\"WildAntelope\",\"recordLabel\":\"StillBottomRecords\"},{\"name\":\"ManishDitch\",\"recordLabel\":\"ACR\"},{\"name\":\"AdrianVenti\",\"recordLabel\":\"MonocracyRecords\"},{\"name\":\"YOUKRANE\",\"recordLabel\":\"AntiRecords\"}]},{\"name\":\"LOL-palooza\",\"bands\":[{\"name\":\"WinterPrimates\",\"recordLabel\":\"\"},{\"name\":\"FrankJupiter\",\"recordLabel\":\"PacificRecords\"},{\"name\":\"JillBlack\",\"recordLabel\":\"FourthWomanRecords\"},{\"name\":\"WerewolfWeekday\",\"recordLabel\":\"XSRecordings\"}]},{\"name\":\"TwistedTour\",\"bands\":[{\"name\":\"Summon\",\"recordLabel\":\"Outerscope\"},{\"name\":\"Auditones\",\"recordLabel\":\"MarnerSis.Recording\"},{\"name\":\"Squint-281\"}]},{\"bands\":[{\"name\":\"CritterGirls\",\"recordLabel\":\"ACR\"},{\"name\":\"Propeller\",\"recordLabel\":\"PacificRecords\"}]},{\"name\":\"SmallNightIn\",\"bands\":[{\"name\":\"YankeEast\",\"recordLabel\":\"MEDIOCREMusic\"},{\"name\":\"WildAntelope\",\"recordLabel\":\"MarnerSis.Recording\"},{\"name\":\"Squint-281\",\"recordLabel\":\"Outerscope\"},{\"name\":\"GreenMildColdCapsicum\",\"recordLabel\":\"MarnerSis.Recording\"},{\"name\":\"TheBlackDashes\",\"recordLabel\":\"FourthWomanRecords\"}]}]";
-				logger.info("String data hot coded: " + festivalDataResult);
+				// String festivalDataResult = "[{\"name\":\"Trainerella\",\"bands\":[{\"name\":\"WildAntelope\",\"recordLabel\":\"StillBottomRecords\"},{\"name\":\"ManishDitch\",\"recordLabel\":\"ACR\"},{\"name\":\"AdrianVenti\",\"recordLabel\":\"MonocracyRecords\"},{\"name\":\"YOUKRANE\",\"recordLabel\":\"AntiRecords\"}]},{\"name\":\"LOL-palooza\",\"bands\":[{\"name\":\"WinterPrimates\",\"recordLabel\":\"\"},{\"name\":\"FrankJupiter\",\"recordLabel\":\"PacificRecords\"},{\"name\":\"JillBlack\",\"recordLabel\":\"FourthWomanRecords\"},{\"name\":\"WerewolfWeekday\",\"recordLabel\":\"XSRecordings\"}]},{\"name\":\"TwistedTour\",\"bands\":[{\"name\":\"Summon\",\"recordLabel\":\"Outerscope\"},{\"name\":\"Auditones\",\"recordLabel\":\"MarnerSis.Recording\"},{\"name\":\"Squint-281\"}]},{\"bands\":[{\"name\":\"CritterGirls\",\"recordLabel\":\"ACR\"},{\"name\":\"Propeller\",\"recordLabel\":\"PacificRecords\"}]},{\"name\":\"SmallNightIn\",\"bands\":[{\"name\":\"YankeEast\",\"recordLabel\":\"MEDIOCREMusic\"},{\"name\":\"WildAntelope\",\"recordLabel\":\"MarnerSis.Recording\"},{\"name\":\"Squint-281\",\"recordLabel\":\"Outerscope\"},{\"name\":\"GreenMildColdCapsicum\",\"recordLabel\":\"MarnerSis.Recording\"},{\"name\":\"TheBlackDashes\",\"recordLabel\":\"FourthWomanRecords\"}]}]";
+				// logger.info("String data hot coded: " + festivalDataResult);
 
 				Gson gsonObject = new Gson();
 				JsonArray jsonArray = gsonObject.fromJson(festivalDataResult, JsonArray.class); // for array of object
@@ -149,7 +149,7 @@ public class EnergyAustraliaCodingTestApplication {
 					recordLabelCompanyHashMap.put("Bands", bandGroupList);
 					recordLabelCompanyHashMap.put("label", (String) completeElement.get("MusicCompany"));
 
-//					recordLabelCompanyList.add(recordLabelCompanyHashMap); // change
+					// recordLabelCompanyList.add(recordLabelCompanyHashMap); // Old approach
 
 					recordLabelCompanyList.add(new RecordLabelCompany((String) completeElement.get("MusicCompany"), bandGroupList));
 
