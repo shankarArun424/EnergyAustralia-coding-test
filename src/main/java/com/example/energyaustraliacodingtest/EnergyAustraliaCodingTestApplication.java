@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JavaType;
 import com.google.gson.*;
 import com.google.gson.JsonElement;
+import io.micrometer.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class EnergyAustraliaCodingTestApplication {
@@ -30,11 +32,10 @@ public class EnergyAustraliaCodingTestApplication {
 	@RestController
 	public class MusicFestivalBands {
 		Logger logger = LoggerFactory.getLogger(MusicFestivalBands.class);
-		@GetMapping("/api/v1/festivals")
-		public ResponseEntity<String> festivalsList() {
+		@GetMapping("/api/v1/musiclabel")
+		public Object festivalsList() {
 			try {
 				logger.info("Getting the API for the listing of music festival");
-
 				Map<String, List<Map<String, Object>>> recordLabelsMap = new HashMap<>();
 
 				/* API connecting part */
@@ -92,7 +93,7 @@ public class EnergyAustraliaCodingTestApplication {
 
 									bandsList.add(bandMap);
 									recordLabelsMap.put(recordLabel, bandsList);
-									logger.info("recordLabelsMap: " + recordLabelsMap);
+									logger.info("Record Label Mapping: " + recordLabelsMap);
 								}
 							}
 						}
@@ -100,21 +101,25 @@ public class EnergyAustraliaCodingTestApplication {
 					}
 				}
 
-				logger.info("Sorting of data for music industry names");
-//				ObjectMapper objectMapper = new ObjectMapper();
-//				Map<String, Object> sortedList = objectMapper.readValue(bandsList.toString(), new TypeReference<Map<String, Object>>() {});
-//				Collections.sort(sortedList, (b1, b2) -> b1.get("MusicCompany").toString().compareTo(b2.get("MusicCompany").toString()));
+				List<RecordLabelCompany> recordLabelCompanyList = new ArrayList<>();
 				// Add into the controller
 				RecordLabelCompany rlc = new RecordLabelCompany();
 				JsonArray totalData = new JsonArray();
 
-				logger.info("bandsList: " + bandsList);
+				logger.info("Bands List: " + bandsList);
+				List<String> musicIndustryNames = new ArrayList<String>();
 
 				for (Map<String, Object> completeElement : bandsList) {
+					// remove if the music name comes again.
+					if(musicIndustryNames.size() == 0 || !musicIndustryNames.contains(completeElement.get("MusicCompany").toString())){
+						musicIndustryNames.add(completeElement.get("MusicCompany").toString());
+					} else if(musicIndustryNames.contains(completeElement.get("MusicCompany").toString())) {
+						logger.info("Found: " + completeElement.get("MusicCompany").toString());
+						continue;
+					}
 					List<Band> bandGroupList = new ArrayList<>();
 					for (Map<String, Object> completeElement2 : bandsList) {
 						List<Festival> festivalGroupList = new ArrayList<>();
-						logger.info("Band names: "  + completeElement2.get("MusicCompany") + " = " + completeElement.get("MusicCompany") + ", " + completeElement2.get("name"));
 						if (completeElement.get("MusicCompany").equals(completeElement2.get("MusicCompany"))) {
 							for (Map<String, Object> completeElement3 : bandsList) {
 								if (completeElement.get("MusicCompany").equals(completeElement3.get("MusicCompany")) &&
@@ -122,48 +127,45 @@ public class EnergyAustraliaCodingTestApplication {
 									Festival tempFestival = new Festival();
 									tempFestival.setName((String) completeElement3.get("festivalName"));
 									festivalGroupList.add(tempFestival);
-
 								}
 							}
-							ObjectMapper mapper = new ObjectMapper();
-							String json = mapper.writeValueAsString(festivalGroupList);
-							System.out.println("festivalGroupList: " + json);
+							// sorting festival names
+							logger.info("Sorting of festival data for music industry names");
+							Collections.sort(festivalGroupList, (b1, b2) -> b1.getName().toString().compareTo(b2.getName().toString()));
 							Band tempBand = new Band();
 							tempBand.setName(completeElement2.get("name").toString());
 							tempBand.setFestivals(festivalGroupList);
 							bandGroupList.add(tempBand);
-							logger.info("Band name: " + completeElement2.get("name"));
-							ObjectMapper mapper2 = new ObjectMapper();
-							String json2 = mapper2.writeValueAsString(bandGroupList);
-							System.out.println("bandGroupList: " + json2);
 						}
 					}
+					// Sorting band group names
+					logger.info("Sorting of band data for music industry names");
+					Collections.sort(bandGroupList, (b1, b2) -> b1.getName().toString().compareTo(b2.getName().toString()));
+
 					rlc.setLabel((String) completeElement.get("MusicCompany"));
 					rlc.setBands(bandGroupList);
-					ObjectMapper mapper = new ObjectMapper();
-					String json = mapper.writeValueAsString(rlc);
-					System.out.println("rlc: " + json);
 
+					Map<String, Object> recordLabelCompanyHashMap = new HashMap<>();
+					recordLabelCompanyHashMap.put("Bands", bandGroupList);
+					recordLabelCompanyHashMap.put("label", (String) completeElement.get("MusicCompany"));
+
+//					recordLabelCompanyList.add(recordLabelCompanyHashMap); // change
+
+					recordLabelCompanyList.add(new RecordLabelCompany((String) completeElement.get("MusicCompany"), bandGroupList));
+
+					String json = new Gson().toJson(rlc);
 					JsonObject finalJsonArray = gsonObject.fromJson(json, JsonObject.class);
-
 					totalData.add(finalJsonArray);
 				}
+				logger.info("Sorting of final data for music industry names");
+				Collections.sort(recordLabelCompanyList, new SortingCustomObjectComparator());
 
-				System.out.println("totalData: " + totalData);
-
-//				JsonObject jsonObject = new JsonObject();
-//				jsonObject.add("Result", totalData);
-
-				JsonElement completeDataElement = totalData;
-				String jsonString = gsonObject.toJson(completeDataElement);
-//				JsonArray jsonArray2 = gsonObject.fromJson(festivalDataResult, JsonArray.class); // for array of object
-
-				return ResponseEntity.status(HttpStatus.OK).body(jsonString);
+				return ResponseEntity.status(HttpStatus.OK).body(recordLabelCompanyList);
 
 			} catch(Exception e) {
 				logger.error("There's been an issue at server side: " + e);
 				if(e.getMessage() != null && e.getMessage().equals( "429 Too Many Requests: \"Too many requests, throttling\"")){
-					return ResponseEntity.ok().body(null);
+					return ResponseEntity.status(429).body(null);
 				}
 			}
 			return ResponseEntity.ok().body(null);
@@ -200,6 +202,11 @@ public class EnergyAustraliaCodingTestApplication {
 	public class RecordLabelCompany {
 		private String label;
 		private List<Band> bands;
+		public RecordLabelCompany(){}
+		public RecordLabelCompany(String label, List<Band> bands){
+			this.label = label;
+			this.bands = bands;
+		}
 		public String getLabel() {
 			return label;
 		}
@@ -212,9 +219,22 @@ public class EnergyAustraliaCodingTestApplication {
 		public void setBands(List<Band> bands) {
 			this.bands = bands;
 		}
-		@JsonProperty("MusicCompany")
-		public String getMusicCompany() {
-			return label;
+	}
+
+	public class SortingCustomObjectComparator implements Comparator<RecordLabelCompany> {
+		@Override
+		public int compare(RecordLabelCompany obj1, RecordLabelCompany obj2) {
+			return obj1.getLabel().compareTo(obj2.getLabel());
+		}
+	}
+
+	public class RecordLabelCompanyList {
+		private List<RecordLabelCompany> recordLableList;
+		public RecordLabelCompanyList() {
+			recordLableList = new ArrayList<>();
+		}
+		public void setRecordLabelCompanyList(List<RecordLabelCompany> recordLableList) {
+			this.recordLableList = recordLableList;
 		}
 	}
 }
