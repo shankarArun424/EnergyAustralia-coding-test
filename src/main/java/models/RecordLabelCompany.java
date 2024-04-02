@@ -1,7 +1,5 @@
 package models;
 
-import com.example.energyaustraliacodingtest.EnergyAustraliaCodingTestApplication;
-
 import java.util.List;
 
 public class RecordLabelCompany {
