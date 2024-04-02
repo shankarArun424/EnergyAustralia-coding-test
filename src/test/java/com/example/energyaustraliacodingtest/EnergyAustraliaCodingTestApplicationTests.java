@@ -11,7 +11,7 @@ class EnergyAustraliaCodingTestApplicationTests {
 	private int port;
 
 	@Autowired
-	private EnergyAustraliaCodingTestApplication EACTA;
+	private EnergyAustraliaCodingTestApplication EACTA = new EnergyAustraliaCodingTestApplication();
 
 	@Test
 	void contextLoads() {
@@ -19,10 +19,10 @@ class EnergyAustraliaCodingTestApplicationTests {
 	}
 
 	@Test
-	public void testYourEndpoint() {
+	public void testMusicFestivalDataWithRecordLabels() {
 		String baseUrl = "http://localhost:" + port;
 
-		// You can make HTTP requests to your endpoints using TestRestTemplate
+        // You can make HTTP requests to your endpoints using TestRestTemplate
 //		String response = EACTA.getForObject(baseUrl + "/api/v1/musiclabel", String.class);
 
 	}
