@@ -1,13 +1,7 @@
 package com.example.energyaustraliacodingtest;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JavaType;
 import com.google.gson.*;
 import com.google.gson.JsonElement;
-import io.micrometer.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -20,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class EnergyAustraliaCodingTestApplication {
