@@ -12,10 +12,6 @@ Make sure you have the following installed:
 
 1. Clone this repository:
 
-```bash
-git clone https://github.com/shankarArun424/ea
-```
-
 2. Navigate to the project directory:
 ```bash
 cd ea
@@ -38,6 +34,18 @@ mvn spring-boot:run
 6. To run tests, execute
 ```bash
 mvn test
+```
+7. Create as Spring boot package
+```bash
+mvn clean install spring-boot:repackage
+```
+8. Build with Docker
+```bash
+docker build --build-arg JAR_FILE=target/*.jar -t springBoot/energyaustralia-api-coding-test .
+```
+9. Run with Docker
+```bash
+docker run -p 8086:8086 energyaustralia-api-coding-test
 ```
 
 # Digitalizing the api result
