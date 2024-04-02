@@ -54,7 +54,7 @@ We modernized the result from the api to the content list out in the music indus
 
 # Installation and running
 Take a git clone of this repo and trigger the project.
-Once you hit the URL (http://localhost:8086/api/v1/musiclabel) in postman or browser, It returns the listing of the music based band list and the attented festivals for the individual bands.
+Once you hit the URL (http://localhost:8086/api/v1/musiclabel) in postman as GET method or browser, It returns the listing of the music based band list and the attented festivals for the individual bands.
 
 # Spring boot Maven project
 Designed this API using the Apache Maven plugin, It allows you to package executable jar or war archives.
