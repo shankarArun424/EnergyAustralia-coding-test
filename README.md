@@ -14,7 +14,7 @@ Make sure you have the following installed:
 
 2. Navigate to the project directory:
 ```bash
-cd ea
+cd <project_directory>
 ```
 
 3. Build the project using Maven:
