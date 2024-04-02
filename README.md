@@ -58,3 +58,10 @@ Once you hit the URL (http://localhost:8086/api/v1/musiclabel) in postman as GET
 
 # Spring boot Maven project
 Designed this API using the Apache Maven plugin, It allows you to package executable jar or war archives.
+
+### Features to be in the future
+- To define api contract using openapi 3.0 or swagger 2.0 - TODO
+- To use EA swagger to generate client code - TODO.
+
+We are currently in the process of developing a Swagger page to showcase the APIs we've created. This will be a part of our upcoming initiatives.
+
